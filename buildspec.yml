@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 119770767667.dkr.ecr.ap-northeast-2.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...          
+      - docker build -t django-hello .
+      - docker tag django-hello:latest 119770767667.dkr.ecr.ap-northeast-2.amazonaws.com/django-hello:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 119770767667.dkr.ecr.ap-northeast-2.amazonaws.com/django-hello:latest
+artifacts:
+  files:
+    - '**/*'
+
